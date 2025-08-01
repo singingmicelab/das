@@ -11,7 +11,7 @@ from typing import Optional, Dict
 
 try:
     import wandb
-    from wandb.keras import WandbCallback
+    from wandb.integration.keras import WandbCallback
 
     HAS_WANDB = True
 except ImportError as e:

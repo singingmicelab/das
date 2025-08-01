@@ -16,13 +16,14 @@ dependencies = [
     'matplotlib_scalebar',
     'xarray-behave',
     'tqdm',
-    'numpy==1.26.4 ; platform_system == "Windows"',
+    'numpy==1.26.4',
 ]
 
 readme = "README.md"
 
 [project.optional-dependencies]
 dev = ["pytest", "flit"]
+tune = ["keras-tuner", "wandb"]
 
 [project.urls]
 source = "https://github.com/janclemenslab/das"
