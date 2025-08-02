@@ -442,7 +442,7 @@ def train(
     fit_hist = model.fit(
         data_gen,
         epochs=nb_epoch,
-        steps_per_epoch=min(len(data_gen), 1000),
+        # steps_per_epoch=min(len(data_gen), 1000),
         verbose=verbose,
         validation_data=val_gen,
         callbacks=callbacks,

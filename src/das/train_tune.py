@@ -98,6 +98,8 @@ class DasTuner(kt.Tuner):
 
             logger.info("Hyperparameters:")
             logger.info(trial.hyperparameters.values)
+            logger.info("Full parameters:")
+            logger.info(self.params)
             if steps_per_epoch is None:
                 steps_per_epoch = min(len(data_gen), 1000)
 
@@ -109,7 +111,7 @@ class DasTuner(kt.Tuner):
                 data_gen,
                 validation_data=val_gen,
                 epochs=epochs,
-                steps_per_epoch=steps_per_epoch,
+                # steps_per_epoch=steps_per_epoch,
                 callbacks=callbacks,
                 verbose=verbose,
             )
@@ -429,7 +431,7 @@ def train(
 
     tuner = DasTuner(
         params=params,
-        oracle=kt.oracles.BayesianOptimization(
+        oracle=kt.oracles.BayesianOptimizationOracle(
             objective=kt.Objective("val_loss", "min"),
             max_trials=nb_tune_trials,
         ),
