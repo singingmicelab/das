@@ -65,7 +65,7 @@ def load(location, x_suffix="", y_suffix=""):
     elif location.endswith(".h5"):
         data = h5py.File.open(location, mode="r")
     elif location.endswith(".npy"):
-        data = npy_dir.load(location)
+        data = npy_dir.load(location, memmap_dirs="all")
     else:
         raise ValueError(
             f'Could not load data. Location {location} has unknown extension - needs to end either in ".zarr", ".npy", or ".h5".'

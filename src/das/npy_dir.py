@@ -95,13 +95,14 @@ def save(location: str, data: DictClass) -> None:
     for key_top in data.keys():
         os.makedirs(os.path.join(location, key_top), exist_ok=True)
         for key, val in data[key_top].items():
-            np.save(os.path.join(location, key_top, key + ".npy"), val)
-            # filename = os.path.join(location, key_top, key + ".npy")
-            # mmap = np.lib.format.open_memmap(filename, mode="w+", dtype=val.dtype, shape=val.shape)
-            # # chunked write
-            # chunk_size = 8_000_000_000 // val.shape[1]
-            # for chunk_start in range(0, val.shape[0] - chunk_size, chunk_size):
-            #     chunk_end = min(val.shape[0], chunk_start + chunk_size)
-            #     mmap[chunk_start:chunk_end] = val[chunk_start:chunk_end]
-            # mmap.flush()
-            # del mmap
+            filename = os.path.join(location, key_top, key + ".npy")
+            if not val.shape or np.dtype(val.dtype).hasobject:
+                np.save(filename, val)
+                continue
+            mmap = np.lib.format.open_memmap(filename, mode="w+", dtype=val.dtype, shape=val.shape)
+            chunk_size = val.chunks[0] if getattr(val, "chunks", None) else 1_000_000
+            for chunk_start in range(0, val.shape[0], chunk_size):
+                chunk_end = min(val.shape[0], chunk_start + chunk_size)
+                mmap[chunk_start:chunk_end] = val[chunk_start:chunk_end]
+            mmap.flush()
+            del mmap
