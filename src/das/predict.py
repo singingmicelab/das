@@ -546,22 +546,14 @@ def predict(
         params["batch_size"] = batch_size
 
     if pad:
-        # figure out length in multiples of batches
+        # pad one extra batch with end val so the last, partial batch is still predicted
         batch_len = params["batch_size"] * params["nb_hist"] + params["nb_hist"]
         x_len_original = len(x)
-        pad_len = 0
-        if np.remainder(len(x), batch_len) > 0:
-            pad_len = batch_len - np.remainder(len(x), batch_len)
-        # pad with end val to fill
-        x = np.pad(x, ((0, pad_len), (0, 0)), mode="edge")
+        x = np.pad(x, ((0, batch_len), (0, 0)), mode="edge")
 
     class_probabilities = predict_probabilities(x, model, params, verbose, prepend_data_padding)
     temp_dir = class_probabilities.temp_dir
     if pad:
-        # set all song probs in padded section to zero to avoid out of bounds detections!
-        # assumes that the non-song class is at index 0
-        class_probabilities[-pad_len:, 1:] = 0
-        class_probabilities[-pad_len:, 0] = 1
         # trim probs to original len of x
         class_probabilities = class_probabilities[:x_len_original, :]
 
